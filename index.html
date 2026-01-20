@@ -1,0 +1,250 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Amara's Expense Manager</title>
+    <meta name="description" content="Personal monthly expense tracker with categorized reporting">
+    <meta name="theme-color" content="#667eea">
+    <link rel="manifest" href="manifest.json">
+    <link rel="apple-touch-icon" href="icon-512.png">
+    <link rel="stylesheet" href="styles.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+</head>
+
+<body>
+    <!-- Login Screen -->
+    <div id="loginScreen" class="login-container">
+        <div class="login-card">
+            <div class="login-header">
+                <div class="logo-circle">
+                    <svg width="48" height="48" viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <path d="M24 4L6 14V22C6 33.05 13.84 43.24 24 46C34.16 43.24 42 33.05 42 22V14L24 4Z"
+                            fill="url(#gradient1)" />
+                        <path d="M20 24L22.5 26.5L28 21" stroke="white" stroke-width="2.5" stroke-linecap="round"
+                            stroke-linejoin="round" />
+                        <defs>
+                            <linearGradient id="gradient1" x1="6" y1="4" x2="42" y2="46" gradientUnits="userSpaceOnUse">
+                                <stop stop-color="#667eea" />
+                                <stop offset="1" stop-color="#764ba2" />
+                            </linearGradient>
+                        </defs>
+                    </svg>
+                </div>
+                <h1>Expense Manager</h1>
+                <p class="subtitle">Secure Access</p>
+            </div>
+            <form id="loginForm" class="login-form">
+                <div class="input-group">
+                    <label for="password">Password</label>
+                    <input type="password" id="password" placeholder="Enter your password" required
+                        autocomplete="current-password">
+                    <span class="input-icon">🔒</span>
+                </div>
+                <button type="submit" class="btn-primary">
+                    <span>Sign In</span>
+                    <svg width="20" height="20" viewBox="0 0 20 20" fill="none">
+                        <path d="M4 10H16M16 10L12 6M16 10L12 14" stroke="currentColor" stroke-width="2"
+                            stroke-linecap="round" stroke-linejoin="round" />
+                    </svg>
+                </button>
+                <div id="loginError" class="error-message"></div>
+            </form>
+        </div>
+        <div class="background-decoration">
+            <div class="blob blob-1"></div>
+            <div class="blob blob-2"></div>
+            <div class="blob blob-3"></div>
+        </div>
+    </div>
+
+    <!-- Main Application -->
+    <div id="mainApp" class="main-app hidden">
+        <!-- Status Bar -->
+        <div id="statusIndicator" class="status-bar offline">
+            <span class="status-dot"></span>
+            <span class="status-text">Checking server...</span>
+        </div>
+        <!-- Header -->
+        <header class="app-header">
+            <div class="header-content">
+                <div class="header-left">
+                    <div class="logo-small">
+                        <svg width="32" height="32" viewBox="0 0 48 48" fill="none">
+                            <path d="M24 4L6 14V22C6 33.05 13.84 43.24 24 46C34.16 43.24 42 33.05 42 22V14L24 4Z"
+                                fill="url(#gradient2)" />
+                            <defs>
+                                <linearGradient id="gradient2" x1="6" y1="4" x2="42" y2="46"
+                                    gradientUnits="userSpaceOnUse">
+                                    <stop stop-color="#667eea" />
+                                    <stop offset="1" stop-color="#764ba2" />
+                                </linearGradient>
+                            </defs>
+                        </svg>
+                    </div>
+                    <div class="header-title">
+                        <h2 id="welcomeMessage">Welcome Amara</h2>
+                        <p class="header-subtitle" id="currentMonth"></p>
+                    </div>
+                </div>
+                <button id="logoutBtn" class="btn-logout" title="Logout">
+                    <svg width="20" height="20" viewBox="0 0 20 20" fill="none">
+                        <path
+                            d="M7 17H4C3.46957 17 2.96086 16.7893 2.58579 16.4142C2.21071 16.0391 2 15.5304 2 15V5C2 4.46957 2.21071 3.96086 2.58579 3.58579C2.96086 3.21071 3.46957 3 4 3H7M13 13L17 9M17 9L13 5M17 9H7"
+                            stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
+                    </svg>
+                </button>
+            </div>
+        </header>
+
+        <!-- Navigation Tabs -->
+        <nav class="tab-navigation">
+            <button class="tab-btn active" data-tab="addExpense">
+                <svg width="20" height="20" viewBox="0 0 20 20" fill="none">
+                    <path d="M10 4V16M4 10H16" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" />
+                </svg>
+                <span>Add Expense</span>
+            </button>
+            <button class="tab-btn" data-tab="report">
+                <svg width="20" height="20" viewBox="0 0 20 20" fill="none">
+                    <path d="M3 3V17H17M7 13L10 10L13 13L17 9" stroke="currentColor" stroke-width="2"
+                        stroke-linecap="round" stroke-linejoin="round" />
+                </svg>
+                <span>Report</span>
+            </button>
+            <div class="tab-indicator"></div>
+        </nav>
+
+        <!-- Tab Content -->
+        <main class="tab-content">
+            <!-- Add Expense Tab -->
+            <section id="addExpenseTab" class="tab-pane active">
+                <div class="content-card">
+                    <div class="card-header">
+                        <h3>Add New Expense</h3>
+                        <p>Track your spending efficiently</p>
+                    </div>
+                    <form id="expenseForm" class="expense-form">
+                        <div class="form-row single-row">
+                            <div class="input-group">
+                                <label for="amount">Amount</label>
+                                <div class="input-with-icon">
+                                    <span class="currency-symbol">RS.</span>
+                                    <input type="number" id="amount" step="0.01" min="0" placeholder="0.00" required>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="form-row">
+                            <div class="input-group">
+                                <label for="detail">Detail</label>
+                                <input type="text" id="detail" placeholder="e.g., Shopping, Groceries, Fees, Petrol"
+                                    required>
+                            </div>
+                        </div>
+                        <button type="submit" class="btn-primary btn-large">
+                            <svg width="20" height="20" viewBox="0 0 20 20" fill="none">
+                                <path d="M10 4V16M4 10H16" stroke="currentColor" stroke-width="2.5"
+                                    stroke-linecap="round" />
+                            </svg>
+                            <span>Add Expense</span>
+                        </button>
+                    </form>
+                    <div id="successMessage" class="success-message hidden">
+                        <svg width="20" height="20" viewBox="0 0 20 20" fill="none">
+                            <path d="M16.667 5L7.5 14.167L3.333 10" stroke="currentColor" stroke-width="2.5"
+                                stroke-linecap="round" stroke-linejoin="round" />
+                        </svg>
+                        <span>Expense added successfully!</span>
+                    </div>
+                </div>
+
+                <!-- Recent Expenses -->
+                <div class="content-card recent-expenses">
+                    <div class="card-header">
+                        <h3>Recent Expenses</h3>
+                        <p id="recentCount">Last 5 entries</p>
+                    </div>
+                    <div id="recentExpensesList" class="expenses-list"></div>
+                </div>
+            </section>
+
+            <!-- Report Tab -->
+            <section id="reportTab" class="tab-pane">
+                <div class="report-header">
+                    <div class="month-selector">
+                        <button id="prevMonth" class="month-nav-btn">
+                            <svg width="20" height="20" viewBox="0 0 20 20" fill="none">
+                                <path d="M12 16L6 10L12 4" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                                    stroke-linejoin="round" />
+                            </svg>
+                        </button>
+                        <div class="selected-month">
+                            <h3 id="reportMonth"></h3>
+                            <p id="reportDateRange"></p>
+                        </div>
+                        <button id="nextMonth" class="month-nav-btn">
+                            <svg width="20" height="20" viewBox="0 0 20 20" fill="none">
+                                <path d="M8 4L14 10L8 16" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                                    stroke-linejoin="round" />
+                            </svg>
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Total Summary -->
+                <div class="summary-card">
+                    <div class="summary-content">
+                        <div class="summary-icon">
+                            <svg width="32" height="32" viewBox="0 0 32 32" fill="none">
+                                <path
+                                    d="M16 28C22.6274 28 28 22.6274 28 16C28 9.37258 22.6274 4 16 4C9.37258 4 4 9.37258 4 16C4 22.6274 9.37258 28 16 28Z"
+                                    stroke="currentColor" stroke-width="2.5" />
+                                <path d="M16 10V16L20 20" stroke="currentColor" stroke-width="2.5"
+                                    stroke-linecap="round" />
+                            </svg>
+                        </div>
+                        <div class="summary-text">
+                            <p class="summary-label">Total Monthly Expense</p>
+                            <h2 class="summary-amount" id="totalExpense">RS. 0.00</h2>
+                            <p class="summary-count" id="expenseCount">0 expenses</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Category Breakdown -->
+                <div class="content-card">
+                    <div class="card-header">
+                        <h3>Category Breakdown</h3>
+                        <p>Expenses grouped by category</p>
+                    </div>
+                    <div id="categoryBreakdown" class="category-list"></div>
+                </div>
+
+                <!-- Detailed List -->
+                <div class="content-card">
+                    <div class="card-header">
+                        <h3>All Expenses</h3>
+                        <p id="detailCount">Detailed view</p>
+                    </div>
+                    <div id="detailedExpensesList" class="expenses-list detailed"></div>
+                </div>
+            </section>
+        </main>
+    </div>
+
+    <script src="script.js"></script>
+    <script>
+        if ('serviceWorker' in navigator) {
+            window.addEventListener('load', () => {
+                navigator.serviceWorker.register('./sw.js')
+                    .then(reg => console.log('Service Worker registered', reg))
+                    .catch(err => console.log('Service Worker registration failed', err));
+            });
+        }
+    </script>
+</body>
+
+</html>
